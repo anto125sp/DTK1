@@ -15,14 +15,14 @@
         
         body {
             margin: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-family: Roboto, Arial, sans-serif;
             background-color: #ffffff;
             color: #333;
             overflow-x: hidden;
             overscroll-behavior-y: contain;
         }
 
-        /* HEADER FISSO */
+        /* HEADER BASE (ANDROID) */
         .ticket-header {
             background-color: #00a896;
             color: white;
@@ -34,46 +34,77 @@
             top: 0;
             z-index: 1001;
         }
-
         .ticket-header h2 { font-size: 19px; font-weight: 400; margin: 0 0 0 18px; flex: 1; line-height: 1.1; }
 
-        /* OVERLAY ROTELLINA */
+        .back-icon-android { display: flex; align-items: center; color: white; text-decoration: none; }
+        .back-text-ios, .edit-text-ios { display: none; }
+
+        /* --- MODIFICHE SPECIFICHE SOLO PER IPHONE --- */
+        @supports (-webkit-touch-callout: none) {
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+                letter-spacing: -0.01em;
+            }
+            .ticket-header {
+                height: calc(50px + env(safe-area-inset-top)) !important;
+                padding: env(safe-area-inset-top) 12px 0 12px !important;
+            }
+            .ticket-header h2 {
+                font-size: 16px !important;
+                font-weight: 600 !important;
+                text-align: center;
+                margin: 0 !important;
+            }
+            
+            .back-icon-android svg { display: none; }
+            .back-text-ios { 
+                display: flex; align-items: center; font-size: 17px; 
+                color: white; font-weight: 400;
+            }
+            .back-text-ios::before {
+                content: ''; display: inline-block; width: 11px; height: 11px;
+                border-left: 2px solid white; border-bottom: 2px solid white;
+                transform: rotate(45deg); margin-right: 4px;
+            }
+
+            #edit-toggle { font-size: 0 !important; }
+            .edit-text-ios { display: inline; font-size: 17px; font-weight: 400; color: white; }
+
+            /* QR PIÙ GRANDE SU IPHONE */
+            .qr-image { 
+                width: 175px !important; 
+            }
+            .qr-section {
+                padding: 10px 0 !important; /* Ancora più compatto */
+            }
+            .qr-section p {
+                font-size: 17px !important; /* Date sotto QR rimpicciolite */
+                margin-top: 10px !important;
+            }
+
+            /* DETTAGLI PIÙ PICCOLI SU IPHONE */
+            .label { font-size: 14px !important; font-weight: 500 !important; }
+            .value { font-size: 15px !important; }
+            .detail-row { padding: 7px 0 !important; }
+        }
+
+        /* ELEMENTI COMUNI */
         #refresh-overlay {
             position: fixed;
             top: calc(62px + env(safe-area-inset-top)); 
             left: 0; width: 100%; height: 100%;
             background: rgba(255, 255, 255, 0.9); 
-            z-index: 1000;
-            display: none; /* Inizialmente nascosto */
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.2s ease;
+            z-index: 1000; display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.2s ease;
         }
-
         #lottie-container { width: 80px; height: 80px; }
+        #edit-toggle { font-size: 26px; font-weight: 500; color: white; cursor: pointer; padding: 5px; min-width: 65px; text-align: right; }
 
-        #edit-toggle { font-size: 26px; font-weight: 500; color: white; cursor: pointer; padding: 5px; }
-
-        /* BANNER E CONTENUTO */
-        .video-container {
-            position: relative;
-            width: 100%; height: 100px;
-            background-color: #ffffff; overflow: hidden;
-            display: flex; align-items: center; padding: 0 8px;
-        }
-
-        .video-emulator {
-            position: absolute; top: 0; left: 0; height: 100%; width: 0%;
-            background-color: #a8e2d7;
-            animation: arstTurboFill 1.8s infinite linear;
-            z-index: 1;
-        }
-
+        .video-container { position: relative; width: 100%; height: 100px; background-color: #ffffff; overflow: hidden; display: flex; align-items: center; padding: 0 8px; }
+        .video-emulator { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background-color: #a8e2d7; animation: arstTurboFill 1.8s infinite linear; z-index: 1; }
         .icons-stack { position: relative; z-index: 3; display: flex; flex-direction: column; align-items: center; width: 32px; }
         .icon-checkmark { width: 30px; height: 30px; position: absolute; left: -4px; top: 50%; transform: translateY(-50%); }
         .icon-bus-svg { width: 20px; height: auto; margin-top: 65px; margin-left: 25px; }
-
         .overlay-text { position: relative; z-index: 3; padding-left: 4px; margin-top: -45px; }
         .agency-name { font-weight: 400; font-size: 16px; color: #8a8a8a; margin: 0; }
         .ticket-type { font-weight: 400; font-size: 16px; color: #222; margin: 0; }
@@ -100,14 +131,20 @@
     </div>
 
     <header class="ticket-header">
-        <a href="index.html" style="color:white; display:flex; align-items:center; text-decoration:none; padding: 10px; margin-left: -10px;">
+        <a href="index.html" class="back-icon-android">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
+            <span class="back-text-ios">Indietro</span>
         </a>
+        
         <h2>Abbonamento annuale studenti <br> extraurbano</h2>
-        <span id="edit-toggle">&#8942;</span>
+        
+        <div id="edit-toggle">
+            &#8942;
+            <span class="edit-text-ios">Azioni</span>
+        </div>
     </header>
 
     <div class="video-container">
@@ -124,8 +161,8 @@
     </div>
 
     <main class="ticket-body">
-        <section style="text-align: center; padding: 25px 0;">
-            <img src="src/qr.webp" style="width: 130px;" alt="QR">
+        <section class="qr-section" style="text-align: center; padding: 25px 0;">
+            <img src="src/qr.webp" class="qr-image" style="width: 130px;" alt="QR">
             <p style="font-weight: 600; font-size: 20px; color: #757575; margin-top: 15px;">01/09/25 - 31/08/26</p>
         </section>
 
@@ -146,13 +183,10 @@
         let isRefreshing = false;
         let animation;
 
-        // CARICAMENTO ANIMAZIONE
         function initAnimation() {
             animation = lottie.loadAnimation({
                 container: document.getElementById('lottie-container'),
-                renderer: 'svg',
-                loop: true,
-                autoplay: false, // Non parte subito
+                renderer: 'svg', loop: true, autoplay: false,
                 path: 'refresh.json'
             });
         }
@@ -168,47 +202,27 @@
         function triggerRefresh() {
             if (isRefreshing) return;
             isRefreshing = true;
-
             overlay.style.display = 'flex';
-            animation.goToAndPlay(0, true); // Fa ripartire l'animazione da zero
-            
+            animation.goToAndPlay(0, true);
             setTimeout(() => { overlay.style.opacity = '1'; }, 10);
-            
             setTimeout(() => {
                 overlay.style.opacity = '0';
-                setTimeout(() => { 
-                    overlay.style.display = 'none'; 
-                    isRefreshing = false; 
-                }, 300);
+                setTimeout(() => { overlay.style.display = 'none'; isRefreshing = false; }, 300);
             }, 800);
         }
 
-        // PULL TO REFRESH
         let startY = 0;
         document.addEventListener('touchstart', (e) => {
-            if (window.scrollY === 0) { startY = e.touches[0].pageY; } 
-            else { startY = 0; }
+            if (window.scrollY === 0) { startY = e.touches[0].pageY; } else { startY = 0; }
         }, {passive: true});
 
         document.addEventListener('touchmove', (e) => {
             if (startY === 0 || isRefreshing) return;
-            const moveY = e.touches[0].pageY;
-            if (moveY - startY > 80) {
-                triggerRefresh();
-                startY = 0;
-            }
+            if (e.touches[0].pageY - startY > 80) { triggerRefresh(); startY = 0; }
         }, {passive: true});
 
-        document.addEventListener('DOMContentLoaded', () => {
-            initAnimation();
-            loadSavedData();
-        });
-
-        // Nascondi overlay iniziale al primo caricamento pagina (facoltativo)
-        window.addEventListener('load', () => {
-            // Mostriamo l'animazione una volta sola all'apertura vera del sito
-            triggerRefresh();
-        });
+        document.addEventListener('DOMContentLoaded', () => { initAnimation(); loadSavedData(); });
+        window.addEventListener('load', () => { triggerRefresh(); });
 
         function updateRemainingTime() {
             const diff = new Date('2026-08-31T23:59:59') - new Date();
@@ -233,7 +247,12 @@
                 ids.forEach(id => { data[id] = document.getElementById(id).innerText.trim(); });
                 localStorage.setItem('ticket_data_storage', JSON.stringify(data));
             }
-            editToggle.innerHTML = isEditing ? '&#10003;' : '&#8942;';
+            const isIos = /iPhone|iPad|iPod/.test(navigator.userAgent);
+            if (isIos) {
+                document.querySelector('.edit-text-ios').innerText = isEditing ? 'Fine' : 'Azioni';
+            } else {
+                editToggle.innerHTML = isEditing ? '&#10003;' : '&#8942;';
+            }
         });
     </script>
 </body>
