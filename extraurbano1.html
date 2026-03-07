@@ -2,10 +2,14 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Dettaglio Biglietto</title>
     <link rel="manifest" href="manifest.json">
+    
     <meta name="theme-color" content="#00a896">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
     
     <style>
@@ -19,37 +23,26 @@
             user-select: none;
             -webkit-user-select: none;
             overflow-x: hidden;
-            /* Ottimizzazione per iOS elastic scroll */
+            /* Fix per permettere il pull-to-refresh su iOS PWA */
+            min-height: 101vh; 
             overscroll-behavior-y: contain;
             -webkit-overflow-scrolling: touch;
         }
 
-        /* OVERLAY SEMITRASPARENTE */
-        #refresh-overlay {
-            position: fixed;
-            top: 0; left: 0; 
-            width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.7); 
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #lottie-container {
-            width: 70px; 
-            height: 70px;
-        }
-
-        /* HEADER ORIGINALE */
+        /* HEADER CHE SI ESTENDE NEL NOTCH */
         .ticket-header {
             background-color: #00a896;
             color: white;
-            padding: 0 16px;
+            /* env(safe-area-inset-top) gestisce lo spazio del notch su iPhone */
+            padding: env(safe-area-inset-top) 16px 0 16px; 
             display: flex;
             align-items: center;
-            height: 62px;
+            height: calc(62px + env(safe-area-inset-top));
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
+
         .ticket-header h2 {
             font-size: 19px; 
             font-weight: 400; 
@@ -58,7 +51,26 @@
             flex: 1;
         }
 
-        /* PUNTINI EDIT */
+        /* OVERLAY ROTELLINA SOTTO LA TOOLBAR */
+        #refresh-overlay {
+            position: fixed;
+            top: calc(62px + env(safe-area-inset-top)); 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(255, 255, 255, 0.85); 
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        #lottie-container {
+            width: 70px; 
+            height: 70px;
+        }
+
         #edit-toggle {
             font-size: 26px; 
             font-weight: 500; 
@@ -168,7 +180,7 @@
         </section>
 
         <section class="details-list">
-            <div class="detail-row"><span class="label">Codice</span><span class="value" id="t-code">T85136V9D</span></div>
+            <div class="detail-row"><span class="label">Codice</span><span class="value" id="t-code" translate="no">T85136V9D</span></div>
             <div class="detail-row"><span class="label">Data di acquisto</span><span class="value" id="t-date">03/09/25</span></div>
             <div class="detail-row"><span class="label">Nome</span><span class="value" id="t-name">Antonio</span></div>
             <div class="detail-row"><span class="label">Cognome</span><span class="value" id="t-surname">Frau</span></div>
@@ -181,7 +193,7 @@
     <script>
         const ids = ['t-code', 't-date', 't-name', 't-surname', 't-card', 't-city'];
 
-        // 1. CARICA I DATI SALVATI ALL'APERTURA
+        // 1. CARICAMENTO DATI PERSISTENTI
         function loadSavedData() {
             const saved = localStorage.getItem('ticket_data_storage');
             if (saved) {
@@ -192,7 +204,7 @@
             }
         }
 
-        // 2. SALVA I DATI NEL TELEFONO
+        // 2. SALVATAGGIO DATI (quando si preme la spunta)
         function saveCurrentData() {
             const data = {};
             ids.forEach(id => {
@@ -201,33 +213,35 @@
             localStorage.setItem('ticket_data_storage', JSON.stringify(data));
         }
 
-        // 3. PULL TO REFRESH PER IPHONE PWA (Senza interferire con Android)
-        let touchStart = 0;
+        // 3. PULL TO REFRESH PER IPHONE PWA (Ottimizzato)
+        let startY = 0;
         document.addEventListener('touchstart', (e) => {
-            touchStart = e.touches[0].pageY;
+            startY = e.touches[0].pageY;
         }, {passive: true});
 
         document.addEventListener('touchmove', (e) => {
-            const touchMove = e.touches[0].pageY;
-            // Se trascini giù per più di 160px mentre sei già in cima
-            if (window.scrollY === 0 && touchMove - touchStart > 160) {
+            const currentY = e.touches[0].pageY;
+            const distance = currentY - startY;
+            // Se trascini giù per più di 140px mentre sei in cima
+            if (window.pageYOffset === 0 && distance > 140) {
                 location.reload(); 
             }
         }, {passive: true});
 
-        // Inizializzazione Service Worker
+        // Service Worker
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js').catch(() => {});
         }
 
+        // Animazione Lottie (Rotellina)
         const animation = lottie.loadAnimation({
             container: document.getElementById('lottie-container'),
             renderer: 'svg', loop: true, autoplay: true,
             path: 'refresh.json'
         });
 
-        // Esegui caricamento appena il DOM è pronto
-        document.addEventListener('DOMContentLoaded', loadSavedData);
+        // Carica dati al boot
+        loadSavedData();
 
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -247,6 +261,7 @@
         setInterval(updateRemainingTime, 1000);
         updateRemainingTime();
 
+        // LOGICA EDIT TESTI
         const editToggle = document.getElementById('edit-toggle');
         let isEditing = false;
 
@@ -258,11 +273,7 @@
                 el.style.background = isEditing ? '#f5f5f5' : 'transparent';
                 el.style.padding = isEditing ? '2px 5px' : '0';
             });
-
-            if (!isEditing) {
-                saveCurrentData(); 
-            }
-
+            if (!isEditing) saveCurrentData();
             editToggle.innerHTML = isEditing ? '&#10003;' : '&#8942;';
         });
     </script>
