@@ -22,7 +22,7 @@
             overscroll-behavior-y: contain;
         }
 
-        /* HEADER BASE (ANDROID/PIXEL) */
+        /* HEADER BASE (ANDROID) */
         .ticket-header {
             background-color: #00a896;
             color: white;
@@ -39,13 +39,13 @@
         .back-icon-android { display: flex; align-items: center; color: white; text-decoration: none; }
         .back-text-ios, .edit-text-ios, .fake-tabbar-ios { display: none; }
 
-        /* --- MODIFICHE SPECIFICHE SOLO PER IPHONE --- */
+        /* --- CONFIGURAZIONE SPECIFICA IPHONE --- */
         @supports (-webkit-touch-callout: none) {
             body {
                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
                 letter-spacing: -0.01em;
-                /* Spazio extra per non coprire i dati con la finta tabbar */
-                padding-bottom: calc(75px + env(safe-area-inset-bottom)) !important;
+                /* Spazio extra per non coprire i dati con la tabbar verde */
+                padding-bottom: calc(85px + env(safe-area-inset-bottom)) !important;
             }
             .ticket-header {
                 height: calc(50px + env(safe-area-inset-top)) !important;
@@ -58,7 +58,6 @@
                 margin: 0 !important;
             }
             
-            /* Sostituzione icone iOS */
             .back-icon-android svg { display: none; }
             .back-text-ios { 
                 display: flex; align-items: center; font-size: 17px; color: white; font-weight: 400;
@@ -72,7 +71,6 @@
             #edit-toggle { font-size: 0 !important; }
             .edit-text-ios { display: inline; font-size: 17px; font-weight: 400; color: white; }
 
-            /* QR e Testi iOS */
             .qr-image { width: 175px !important; }
             .qr-section { padding: 10px 0 !important; }
             .qr-section p { font-size: 17px !important; margin-top: 10px !important; }
@@ -80,25 +78,28 @@
             .value { font-size: 15px !important; }
             .detail-row { padding: 7px 0 !important; }
 
-            /* FINTA TABBAR IOS OTTIMIZZATA */
+            /* FINTA TABBAR IOS VERDE (toolbar.webp) */
             .fake-tabbar-ios {
                 display: flex !important;
                 position: fixed;
                 bottom: 0;
                 left: 0;
                 width: 100%;
-                height: calc(100px + env(safe-area-inset-bottom));
-                background-color: #f9f9f9;
-                border-top: 0.5px solid #d1d1d1;
+                /* Altezza aumentata a 65px + Safe Area */
+                height: calc(65px + env(safe-area-inset-bottom));
+                background-color: #00a896 !important; /* Verde ARST di fondo */
+                border-top: none !important; /* Elimina la linea bianca superiore */
                 z-index: 2000;
                 padding-bottom: env(safe-area-inset-bottom);
                 align-items: center;
                 justify-content: center;
+                overflow: hidden;
             }
             .fake-tabbar-ios img {
                 height: 100%;
                 width: 100%;
-                object-fit: contain;
+                object-fit: cover; /* Riempie tutto lo spazio eliminando bordi */
+                display: block;
             }
         }
 
@@ -192,7 +193,7 @@
     </main>
 
     <div class="fake-tabbar-ios">
-        <img src="toolbar.webp" alt="Menu" onerror="this.style.display='none'">
+        <img src="toolbar.webp" alt="" onerror="this.style.display='none'">
     </div>
 
     <script>
