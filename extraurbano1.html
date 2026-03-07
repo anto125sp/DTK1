@@ -21,7 +21,7 @@
             overflow-x: hidden;
         }
 
-        /* OVERLAY SEMITRASPARENTE (SENZA SFOCATURA) */
+        /* OVERLAY SEMITRASPARENTE */
         #refresh-overlay {
             position: fixed;
             top: 0; left: 0; 
@@ -38,32 +38,31 @@
             height: 70px;
         }
 
-        /* HEADER PIÙ BASSO */
+        /* HEADER ORIGINALE */
         .ticket-header {
             background-color: #00a896;
             color: white;
             padding: 0 16px;
             display: flex;
             align-items: center;
-            height: 54px; /* Altezza ridotta */
+            height: 62px;
         }
         .ticket-header h2 {
-            font-size: 20px; 
+            font-size: 19px; 
             font-weight: 400; 
             margin: 0 0 0 18px;
             line-height: 1.1; 
             flex: 1;
         }
 
-        /* PUNTINI PIÙ GROSSI (NON PIÙ GRANDI) */
+        /* PUNTINI EDIT */
         #edit-toggle {
-            font-size: 24px; 
-            font-weight: 400; 
+            font-size: 26px; 
+            font-weight: 500; 
             color: white; 
+            margin-top: -5px; 
             margin-left: auto; 
-            margin-top: -7px;
-            padding: 10px;
-            -webkit-text-stroke: 1.2px white; /* Rende il puntino più "massiccio" */
+            padding: 5px;
             cursor: pointer;
         }
 
@@ -177,27 +176,48 @@
     </main>
 
     <script>
-        // REGISTRAZIONE SERVICE WORKER PER PWA
+        const ids = ['t-code', 't-date', 't-name', 't-surname', 't-card', 't-city'];
+
+        // 1. CARICA I DATI SALVATI ALL'APERTURA
+        function loadSavedData() {
+            const saved = localStorage.getItem('ticket_data_storage');
+            if (saved) {
+                const data = JSON.parse(saved);
+                ids.forEach(id => {
+                    if (data[id]) document.getElementById(id).innerText = data[id];
+                });
+            }
+        }
+
+        // 2. SALVA I DATI NEL TELEFONO
+        function saveCurrentData() {
+            const data = {};
+            ids.forEach(id => {
+                data[id] = document.getElementById(id).innerText.trim();
+            });
+            localStorage.setItem('ticket_data_storage', JSON.stringify(data));
+        }
+
+        // Inizializzazione
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js').catch(() => {});
         }
 
         const animation = lottie.loadAnimation({
             container: document.getElementById('lottie-container'),
-            renderer: 'svg',
-            loop: true,
-            autoplay: true,
+            renderer: 'svg', loop: true, autoplay: true,
             path: 'refresh.json'
         });
+
+        // Esegui caricamento appena il DOM è pronto
+        document.addEventListener('DOMContentLoaded', loadSavedData);
 
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const overlay = document.getElementById('refresh-overlay');
                 overlay.style.transition = 'opacity 0.2s ease';
                 overlay.style.opacity = '0';
-                setTimeout(() => {
-                    overlay.style.display = 'none';
-                }, 200);
+                setTimeout(() => { overlay.style.display = 'none'; }, 200);
             }, 500);
         });
 
@@ -211,8 +231,8 @@
         updateRemainingTime();
 
         const editToggle = document.getElementById('edit-toggle');
-        const ids = ['t-code', 't-date', 't-name', 't-surname', 't-card', 't-city'];
         let isEditing = false;
+
         editToggle.addEventListener('click', () => {
             isEditing = !isEditing;
             ids.forEach(id => {
@@ -221,6 +241,11 @@
                 el.style.background = isEditing ? '#f5f5f5' : 'transparent';
                 el.style.padding = isEditing ? '2px 5px' : '0';
             });
+
+            if (!isEditing) {
+                saveCurrentData(); // SALVA QUANDO PREMI LA SPUNTA
+            }
+
             editToggle.innerHTML = isEditing ? '&#10003;' : '&#8942;';
         });
     </script>
