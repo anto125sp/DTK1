@@ -23,8 +23,7 @@
             user-select: none;
             -webkit-user-select: none;
             overflow-x: hidden;
-            /* Fix per permettere il pull-to-refresh su iOS PWA */
-            min-height: 101vh; 
+            /* Scroll elastico iOS */
             overscroll-behavior-y: contain;
             -webkit-overflow-scrolling: touch;
         }
@@ -33,7 +32,6 @@
         .ticket-header {
             background-color: #00a896;
             color: white;
-            /* env(safe-area-inset-top) gestisce lo spazio del notch su iPhone */
             padding: env(safe-area-inset-top) 16px 0 16px; 
             display: flex;
             align-items: center;
@@ -204,7 +202,7 @@
             }
         }
 
-        // 2. SALVATAGGIO DATI (quando si preme la spunta)
+        // 2. SALVATAGGIO DATI
         function saveCurrentData() {
             const data = {};
             ids.forEach(id => {
@@ -213,20 +211,23 @@
             localStorage.setItem('ticket_data_storage', JSON.stringify(data));
         }
 
-        // 3. PULL TO REFRESH PER IPHONE PWA (Ottimizzato)
-        let startY = 0;
-        document.addEventListener('touchstart', (e) => {
-            startY = e.touches[0].pageY;
-        }, {passive: true});
+        // 3. PULL TO REFRESH INTELLIGENTE (Solo iPhone)
+        if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+            document.body.style.minHeight = "100.1vh"; 
+            
+            let startY = 0;
+            document.addEventListener('touchstart', (e) => {
+                startY = e.touches[0].pageY;
+            }, {passive: true});
 
-        document.addEventListener('touchmove', (e) => {
-            const currentY = e.touches[0].pageY;
-            const distance = currentY - startY;
-            // Se trascini giù per più di 140px mentre sei in cima
-            if (window.pageYOffset === 0 && distance > 140) {
-                location.reload(); 
-            }
-        }, {passive: true});
+            document.addEventListener('touchmove', (e) => {
+                const currentY = e.touches[0].pageY;
+                const distance = currentY - startY;
+                if (window.pageYOffset <= 0 && distance > 130) {
+                    location.reload(); 
+                }
+            }, {passive: true});
+        }
 
         // Service Worker
         if ('serviceWorker' in navigator) {
