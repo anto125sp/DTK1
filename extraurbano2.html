@@ -9,112 +9,28 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
-    
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
-        body {
-            margin: 0;
-            font-family: Roboto, Arial, sans-serif;
-            background-color: #ffffff;
-            color: #333;
-            overflow-x: hidden;
-            overscroll-behavior-y: contain;
-        }
-
-        /* HEADER BASE (ANDROID) */
-        .ticket-header {
-            background-color: #26bb9d;
-            color: white;
-            padding: env(safe-area-inset-top) 16px 0 16px; 
-            display: flex;
-            align-items: center;
-            height: calc(62px + env(safe-area-inset-top));
-            position: sticky;
-            top: 0;
-            z-index: 1001;
-        }
+        body { margin: 0; font-family: Roboto, Arial, sans-serif; background-color: #ffffff; color: #333; overflow-x: hidden; overscroll-behavior-y: contain; }
+        .ticket-header { background-color: #26bb9d; color: white; padding: env(safe-area-inset-top) 16px 0 16px; display: flex; align-items: center; height: calc(62px + env(safe-area-inset-top)); position: sticky; top: 0; z-index: 1001; }
         .ticket-header h2 { font-size: 19px; font-weight: 400; margin: 0 0 0 18px; flex: 1; line-height: 1.1; }
-
         .back-icon-android { display: flex; align-items: center; color: white; text-decoration: none; }
         .back-text-ios, .edit-text-ios, .fake-tabbar-ios { display: none; }
-
-        /* --- CONFIGURAZIONE SPECIFICA IPHONE --- */
         @supports (-webkit-touch-callout: none) {
-            body {
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
-                letter-spacing: -0.01em;
-                /* Spazio extra per non coprire i dati con la tabbar verde */
-                padding-bottom: calc(85px + env(safe-area-inset-bottom)) !important;
-            }
-            .ticket-header {
-                height: calc(50px + env(safe-area-inset-top)) !important;
-                padding: env(safe-area-inset-top) 12px 0 12px !important;
-            }
-            .ticket-header h2 {
-                font-size: 16px !important;
-                font-weight: 600 !important;
-                text-align: center;
-                margin: 0 !important;
-            }
-            
+            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important; padding-bottom: calc(85px + env(safe-area-inset-bottom)) !important; }
+            .ticket-header { height: calc(50px + env(safe-area-inset-top)) !important; padding: env(safe-area-inset-top) 12px 0 12px !important; }
+            .ticket-header h2 { font-size: 16px !important; font-weight: 600 !important; text-align: center; margin: 0 !important; }
             .back-icon-android svg { display: none; }
-            .back-text-ios { 
-                display: flex; align-items: center; font-size: 17px; color: white; font-weight: 400;
-            }
-            .back-text-ios::before {
-                content: ''; display: inline-block; width: 11px; height: 11px;
-                border-left: 2px solid white; border-bottom: 2px solid white;
-                transform: rotate(45deg); margin-right: 4px;
-            }
-
+            .back-text-ios { display: flex; align-items: center; font-size: 17px; color: white; }
+            .back-text-ios::before { content: ''; display: inline-block; width: 11px; height: 11px; border-left: 2px solid white; border-bottom: 2px solid white; transform: rotate(45deg); margin-right: 4px; }
             #edit-toggle { font-size: 0 !important; }
-            .edit-text-ios { display: inline; font-size: 17px; font-weight: 400; color: white; }
-
-            .qr-image { width: 175px !important; }
-            .qr-section { padding: 10px 0 !important; }
-            .qr-section p { font-size: 17px !important; margin-top: 10px !important; }
-            .label { font-size: 14px !important; font-weight: 500 !important; }
-            .value { font-size: 15px !important; }
-            .detail-row { padding: 7px 0 !important; }
-
-            /* FINTA TABBAR IOS VERDE (toolbar.webp) */
-            .fake-tabbar-ios {
-                display: flex !important;
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                /* Altezza aumentata a 65px + Safe Area */
-                height: calc(75px + env(safe-area-inset-bottom));
-                background-color: #26bb9d !important; /* Verde ARST di fondo */
-                border-top: none !important; /* Elimina la linea bianca superiore */
-                z-index: 2000;
-                padding-bottom: env(safe-area-inset-bottom);
-                align-items: center;
-                justify-content: center;
-                overflow: hidden;
-            }
-            .fake-tabbar-ios img {
-                height: 100%;
-                width: 100%;
-                object-fit: cover; /* Riempie tutto lo spazio eliminando bordi */
-                display: block;
-            }
+            .edit-text-ios { display: inline; font-size: 17px; color: white; }
+            .fake-tabbar-ios { display: flex !important; position: fixed; bottom: 0; left: 0; width: 100%; height: calc(75px + env(safe-area-inset-bottom)); background-color: #26bb9d !important; z-index: 2000; padding-bottom: env(safe-area-inset-bottom); align-items: center; justify-content: center; overflow: hidden; }
+            .fake-tabbar-ios img { height: 100%; width: 100%; object-fit: cover; display: block; }
         }
-
-        /* ELEMENTI COMUNI */
-        #refresh-overlay {
-            position: fixed;
-            top: calc(62px + env(safe-area-inset-top)); 
-            left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.9); 
-            z-index: 1000; display: none; align-items: center; justify-content: center;
-            opacity: 0; transition: opacity 0.2s ease;
-        }
+        #refresh-overlay { position: fixed; top: calc(62px + env(safe-area-inset-top)); left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.9); z-index: 1000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s ease; }
         #lottie-container { width: 80px; height: 80px; }
         #edit-toggle { font-size: 26px; font-weight: 500; color: white; cursor: pointer; padding: 5px; min-width: 65px; text-align: right; }
-
         .video-container { position: relative; width: 100%; height: 100px; background-color: #ffffff; overflow: hidden; display: flex; align-items: center; padding: 0 8px; }
         .video-emulator { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background-color: #a8e2d7; animation: arstTurboFill 1.8s infinite linear; z-index: 1; }
         .icons-stack { position: relative; z-index: 3; display: flex; flex-direction: column; align-items: center; width: 32px; }
@@ -124,156 +40,72 @@
         .agency-name { font-weight: 400; font-size: 16px; color: #8a8a8a; margin: 0; }
         .ticket-type { font-weight: 400; font-size: 16px; color: #222; margin: 0; }
         .remaining-time-overlay { position: absolute; bottom: 10px; right: 16px; z-index: 4; font-size: 14px; color: #757575; }
-
         .details-list { padding: 0 16px; }
         .detail-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1.2px solid #b0b0b0; }
         .label { color: #9e9e9e; font-size: 17px; }
         .value { color: #222; font-size: 18px; text-align: right; flex: 1; margin-left: 20px; }
-
-        @keyframes arstTurboFill {
-            0% { width: 0%; opacity: 1; }
-            15% { width: 100%; opacity: 1; }
-            25% { width: 100%; opacity: 1; }
-            30% { width: 100%; opacity: 0; }
-            100% { width: 0%; opacity: 0; }
-        }
+        @keyframes arstTurboFill { 0% { width: 0%; opacity: 1; } 15% { width: 100%; opacity: 1; } 25% { width: 100%; opacity: 1; } 30% { width: 100%; opacity: 0; } 100% { width: 0%; opacity: 0; } }
     </style>
 </head>
 <body>
-
-    <div id="refresh-overlay">
-        <div id="lottie-container"></div>
-    </div>
-
+    <div id="refresh-overlay"><div id="lottie-container"></div></div>
     <header class="ticket-header">
-        <a href="index.html" class="back-icon-android">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-            <span class="back-text-ios">Indietro</span>
-        </a>
-        
+        <a href="index.html" class="back-icon-android"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg><span class="back-text-ios">Indietro</span></a>
         <h2>Abbonamento annuale studenti <br> extraurbano</h2>
-        
-        <div id="edit-toggle">
-            &#8942;
-            <span class="edit-text-ios">Azioni</span>
-        </div>
+        <div id="edit-toggle">&#8942;<span class="edit-text-ios">Azioni</span></div>
     </header>
-
     <div class="video-container">
         <div class="video-emulator"></div>
-        <div class="icons-stack">
-            <svg class="icon-checkmark" viewBox="0 0 24 24"><path fill="none" stroke="#a8e2d7" stroke-width="2" d="M20 6L9 17l-5-5"></path></svg>
-            <img src="1000131418.webp" class="icon-bus-svg" alt="Bus">
-        </div>
-        <div class="overlay-text">
-            <p class="agency-name">ARST</p>
-            <p class="ticket-type">Abbonamento annuale studenti extraurbano</p>
-        </div>
+        <div class="icons-stack"><svg class="icon-checkmark" viewBox="0 0 24 24"><path fill="none" stroke="#a8e2d7" stroke-width="2" d="M20 6L9 17l-5-5"></path></svg><img src="1000131418.webp" class="icon-bus-svg"></div>
+        <div class="overlay-text"><p class="agency-name">ARST</p><p class="ticket-type">Abbonamento annuale studenti extraurbano</p></div>
         <div class="remaining-time-overlay"><span id="remaining-time"></span></div>
     </div>
-
     <main class="ticket-body">
-        <section class="qr-section" style="text-align: center; padding: 25px 0;">
-            <img src="src/qr.webp" class="qr-image" style="width: 130px;" alt="QR">
-            <p style="font-weight: 600; font-size: 20px; color: #757575; margin-top: 15px;">01/09/25 - 31/08/26</p>
-        </section>
-
+        <section class="qr-section" style="text-align: center; padding: 25px 0;"><img src="src/qr.webp" class="qr-image" style="width: 130px;"><p style="font-weight: 600; font-size: 20px; color: #757575; margin-top: 15px;">01/09/25 - 31/08/26</p></section>
         <section class="details-list">
             <div class="detail-row"><span class="label">Codice</span><span class="value" id="t-code">T85136V9D</span></div>
             <div class="detail-row"><span class="label">Data di acquisto</span><span class="value" id="t-date">03/09/25</span></div>
             <div class="detail-row"><span class="label">Nome</span><span class="value" id="t-name">Antonio</span></div>
             <div class="detail-row"><span class="label">Cognome</span><span class="value" id="t-surname">Frau</span></div>
             <div class="detail-row"><span class="label">Tessera ARST</span><span class="value" id="t-card">5D9TRZ7</span></div>
-            <div class="detail-row"><span class="label">Città</span><span class="value" id="t-city">MEANA SARDO - ORISTANO</span></div>
+            <div class="detail-row"><span class="label">Città</span><span class="value" id="t-city">SOLARUSSA - ORISTANO</span></div>
             <div class="detail-row"><span class="label">Convalida</span><span class="value">03 set, 12:37</span></div>
         </section>
     </main>
-
-    <div class="fake-tabbar-ios">
-        <img src="toolbar.webp" alt="" onerror="this.style.display='none'">
-    </div>
-
+    <div class="fake-tabbar-ios"><img src="toolbar.webp" onerror="this.style.display='none'"></div>
     <script>
-        const ids = ['t-code', 't-date', 't-name', 't-surname', 't-card', 't-city'];
+        const specIds = ['t-code', 't-date', 't-card', 't-city'];
+        const nameIds = ['t-name', 't-surname'];
         const overlay = document.getElementById('refresh-overlay');
-        let isRefreshing = false;
-        let animation;
-
-        function initAnimation() {
-            animation = lottie.loadAnimation({
-                container: document.getElementById('lottie-container'),
-                renderer: 'svg', loop: true, autoplay: false,
-                path: 'refresh.json'
-            });
-        }
-
+        let isRefreshing = false, animation;
         function loadSavedData() {
-            const saved = localStorage.getItem('ticket_data_storage');
-            if (saved) {
-                const data = JSON.parse(saved);
-                ids.forEach(id => { if (data[id]) document.getElementById(id).innerText = data[id]; });
-            }
+            const savedNames = localStorage.getItem('user_identity_global');
+            if (savedNames) { const nData = JSON.parse(savedNames); nameIds.forEach(id => { if (nData[id]) document.getElementById(id).innerText = nData[id]; }); }
+            const savedSpec = localStorage.getItem('ticket_data_extra2');
+            if (savedSpec) { const sData = JSON.parse(savedSpec); specIds.forEach(id => { if (sData[id]) document.getElementById(id).innerText = sData[id]; }); }
         }
-
-        function triggerRefresh() {
-            if (isRefreshing) return;
-            isRefreshing = true;
-            overlay.style.display = 'flex';
-            animation.goToAndPlay(0, true);
-            setTimeout(() => { overlay.style.opacity = '1'; }, 10);
-            setTimeout(() => {
-                overlay.style.opacity = '0';
-                setTimeout(() => { overlay.style.display = 'none'; isRefreshing = false; }, 300);
-            }, 800);
-        }
-
-        let startY = 0;
-        document.addEventListener('touchstart', (e) => {
-            if (window.scrollY === 0) { startY = e.touches[0].pageY; } else { startY = 0; }
-        }, {passive: true});
-
-        document.addEventListener('touchmove', (e) => {
-            if (startY === 0 || isRefreshing) return;
-            if (e.touches[0].pageY - startY > 80) { triggerRefresh(); startY = 0; }
-        }, {passive: true});
-
-        document.addEventListener('DOMContentLoaded', () => { initAnimation(); loadSavedData(); });
-        window.addEventListener('load', () => { triggerRefresh(); });
-
-        function updateRemainingTime() {
-            const diff = new Date('2026-08-31T23:59:59') - new Date();
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            document.getElementById('remaining-time').textContent = `Rimanenti: ${days} giorni ${hours} ore`;
-        }
-        setInterval(updateRemainingTime, 1000);
-        updateRemainingTime();
-
         const editToggle = document.getElementById('edit-toggle');
         let isEditing = false;
         editToggle.addEventListener('click', () => {
             isEditing = !isEditing;
-            ids.forEach(id => {
-                const el = document.getElementById(id);
-                el.contentEditable = isEditing;
-                el.style.background = isEditing ? '#f5f5f5' : 'transparent';
-            });
+            [...specIds, ...nameIds].forEach(id => { const el = document.getElementById(id); el.contentEditable = isEditing; el.style.background = isEditing ? '#f5f5f5' : 'transparent'; });
             if (!isEditing) {
-                const data = {};
-                ids.forEach(id => { data[id] = document.getElementById(id).innerText.trim(); });
-                localStorage.setItem('ticket_data_storage', JSON.stringify(data));
+                const sData = {}; specIds.forEach(id => { sData[id] = document.getElementById(id).innerText.trim(); });
+                const nData = {}; nameIds.forEach(id => { nData[id] = document.getElementById(id).innerText.trim(); });
+                localStorage.setItem('ticket_data_extra2', JSON.stringify(sData));
+                localStorage.setItem('user_identity_global', JSON.stringify(nData));
             }
-            const isIos = /iPhone|iPad|iPod/.test(navigator.userAgent);
-            if (isIos) {
-                document.querySelector('.edit-text-ios').innerText = isEditing ? 'Fine' : 'Azioni';
-            } else {
-                editToggle.innerHTML = isEditing ? '&#10003;' : '&#8942;';
-            }
+            if (/iPhone|iPad|iPod/.test(navigator.userAgent)) { document.querySelector('.edit-text-ios').innerText = isEditing ? 'Fine' : 'Azioni'; } 
+            else { editToggle.innerHTML = isEditing ? '&#10003;' : '&#8942;'; }
         });
+        function initAnimation() { animation = lottie.loadAnimation({ container: document.getElementById('lottie-container'), renderer: 'svg', loop: true, autoplay: false, path: 'refresh.json' }); }
+        function triggerRefresh() { if (isRefreshing) return; isRefreshing = true; overlay.style.display = 'flex'; animation.goToAndPlay(0, true); setTimeout(() => { overlay.style.opacity = '1'; }, 10); setTimeout(() => { overlay.style.opacity = '0'; setTimeout(() => { overlay.style.display = 'none'; isRefreshing = false; }, 300); }, 800); }
+        function updateRemainingTime() { const diff = new Date('2026-08-31T23:59:59') - new Date(); const days = Math.floor(diff / (1000 * 60 * 60 * 24)), hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); document.getElementById('remaining-time').textContent = `Rimanenti: ${days} giorni ${hours} ore`; }
+        document.addEventListener('touchstart', (e) => { startY = window.scrollY === 0 ? e.touches[0].pageY : 0; }, {passive: true});
+        document.addEventListener('touchmove', (e) => { if (startY && !isRefreshing && e.touches[0].pageY - startY > 80) { triggerRefresh(); startY = 0; } }, {passive: true});
+        document.addEventListener('DOMContentLoaded', () => { initAnimation(); loadSavedData(); });
+        window.addEventListener('load', triggerRefresh);
+        setInterval(updateRemainingTime, 1000); updateRemainingTime();
     </script>
 </body>
 </html>
-

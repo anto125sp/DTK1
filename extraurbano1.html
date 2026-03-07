@@ -22,7 +22,7 @@
             overscroll-behavior-y: contain;
         }
 
-        /* HEADER BASE (ANDROID) */
+        /* HEADER */
         .ticket-header {
             background-color: #26bb9d;
             color: white;
@@ -39,74 +39,40 @@
         .back-icon-android { display: flex; align-items: center; color: white; text-decoration: none; }
         .back-text-ios, .edit-text-ios, .fake-tabbar-ios { display: none; }
 
-        /* --- CONFIGURAZIONE SPECIFICA IPHONE --- */
+        /* CONFIGURAZIONE IPHONE */
         @supports (-webkit-touch-callout: none) {
             body {
                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
-                letter-spacing: -0.01em;
-                /* Spazio extra per non coprire i dati con la tabbar verde */
                 padding-bottom: calc(85px + env(safe-area-inset-bottom)) !important;
             }
             .ticket-header {
                 height: calc(50px + env(safe-area-inset-top)) !important;
                 padding: env(safe-area-inset-top) 12px 0 12px !important;
             }
-            .ticket-header h2 {
-                font-size: 16px !important;
-                font-weight: 600 !important;
-                text-align: center;
-                margin: 0 !important;
-            }
-            
+            .ticket-header h2 { font-size: 16px !important; font-weight: 600 !important; text-align: center; margin: 0 !important; }
             .back-icon-android svg { display: none; }
-            .back-text-ios { 
-                display: flex; align-items: center; font-size: 17px; color: white; font-weight: 400;
-            }
+            .back-text-ios { display: flex; align-items: center; font-size: 17px; color: white; }
             .back-text-ios::before {
                 content: ''; display: inline-block; width: 11px; height: 11px;
                 border-left: 2px solid white; border-bottom: 2px solid white;
                 transform: rotate(45deg); margin-right: 4px;
             }
-
             #edit-toggle { font-size: 0 !important; }
-            .edit-text-ios { display: inline; font-size: 17px; font-weight: 400; color: white; }
+            .edit-text-ios { display: inline; font-size: 17px; color: white; }
 
-            .qr-image { width: 175px !important; }
-            .qr-section { padding: 10px 0 !important; }
-            .qr-section p { font-size: 17px !important; margin-top: 10px !important; }
-            .label { font-size: 14px !important; font-weight: 500 !important; }
-            .value { font-size: 15px !important; }
-            .detail-row { padding: 7px 0 !important; }
-
-            /* FINTA TABBAR IOS VERDE (toolbar.webp) */
             .fake-tabbar-ios {
-                display: flex !important;
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                /* Altezza aumentata a 65px + Safe Area */
+                display: flex !important; position: fixed; bottom: 0; left: 0; width: 100%;
                 height: calc(75px + env(safe-area-inset-bottom));
-                background-color: #26bb9d !important; /* Verde ARST di fondo */
-                border-top: none !important; /* Elimina la linea bianca superiore */
-                z-index: 2000;
+                background-color: #26bb9d !important; z-index: 2000;
                 padding-bottom: env(safe-area-inset-bottom);
-                align-items: center;
-                justify-content: center;
-                overflow: hidden;
+                align-items: center; justify-content: center; overflow: hidden;
             }
-            .fake-tabbar-ios img {
-                height: 100%;
-                width: 100%;
-                object-fit: cover; /* Riempie tutto lo spazio eliminando bordi */
-                display: block;
-            }
+            .fake-tabbar-ios img { height: 100%; width: 100%; object-fit: cover; display: block; }
         }
 
         /* ELEMENTI COMUNI */
         #refresh-overlay {
-            position: fixed;
-            top: calc(62px + env(safe-area-inset-top)); 
+            position: fixed; top: calc(62px + env(safe-area-inset-top)); 
             left: 0; width: 100%; height: 100%;
             background: rgba(255, 255, 255, 0.9); 
             z-index: 1000; display: none; align-items: center; justify-content: center;
@@ -141,25 +107,15 @@
 </head>
 <body>
 
-    <div id="refresh-overlay">
-        <div id="lottie-container"></div>
-    </div>
+    <div id="refresh-overlay"><div id="lottie-container"></div></div>
 
     <header class="ticket-header">
         <a href="index.html" class="back-icon-android">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
             <span class="back-text-ios">Indietro</span>
         </a>
-        
         <h2>Abbonamento annuale studenti <br> extraurbano</h2>
-        
-        <div id="edit-toggle">
-            &#8942;
-            <span class="edit-text-ios">Azioni</span>
-        </div>
+        <div id="edit-toggle">&#8942;<span class="edit-text-ios">Azioni</span></div>
     </header>
 
     <div class="video-container">
@@ -192,87 +148,63 @@
         </section>
     </main>
 
-    <div class="fake-tabbar-ios">
-        <img src="toolbar.webp" alt="" onerror="this.style.display='none'">
-    </div>
+    <div class="fake-tabbar-ios"><img src="toolbar.webp" alt="" onerror="this.style.display='none'"></div>
 
     <script>
-        const ids = ['t-code', 't-date', 't-name', 't-surname', 't-card', 't-city'];
+        const specIds = ['t-code', 't-date', 't-card', 't-city'];
+        const nameIds = ['t-name', 't-surname'];
         const overlay = document.getElementById('refresh-overlay');
         let isRefreshing = false;
         let animation;
 
-        function initAnimation() {
-            animation = lottie.loadAnimation({
-                container: document.getElementById('lottie-container'),
-                renderer: 'svg', loop: true, autoplay: false,
-                path: 'refresh.json'
-            });
-        }
-
         function loadSavedData() {
-            const saved = localStorage.getItem('ticket_data_storage');
-            if (saved) {
-                const data = JSON.parse(saved);
-                ids.forEach(id => { if (data[id]) document.getElementById(id).innerText = data[id]; });
+            // Carica Dati Personali (Uguali per tutti)
+            const savedNames = localStorage.getItem('user_identity_global');
+            if (savedNames) {
+                const nData = JSON.parse(savedNames);
+                nameIds.forEach(id => { if (nData[id]) document.getElementById(id).innerText = nData[id]; });
+            }
+            // Carica Dati Titolo (Specifici per questo file)
+            const savedSpec = localStorage.getItem('ticket_data_extra1');
+            if (savedSpec) {
+                const sData = JSON.parse(savedSpec);
+                specIds.forEach(id => { if (sData[id]) document.getElementById(id).innerText = sData[id]; });
             }
         }
-
-        function triggerRefresh() {
-            if (isRefreshing) return;
-            isRefreshing = true;
-            overlay.style.display = 'flex';
-            animation.goToAndPlay(0, true);
-            setTimeout(() => { overlay.style.opacity = '1'; }, 10);
-            setTimeout(() => {
-                overlay.style.opacity = '0';
-                setTimeout(() => { overlay.style.display = 'none'; isRefreshing = false; }, 300);
-            }, 800);
-        }
-
-        let startY = 0;
-        document.addEventListener('touchstart', (e) => {
-            if (window.scrollY === 0) { startY = e.touches[0].pageY; } else { startY = 0; }
-        }, {passive: true});
-
-        document.addEventListener('touchmove', (e) => {
-            if (startY === 0 || isRefreshing) return;
-            if (e.touches[0].pageY - startY > 80) { triggerRefresh(); startY = 0; }
-        }, {passive: true});
-
-        document.addEventListener('DOMContentLoaded', () => { initAnimation(); loadSavedData(); });
-        window.addEventListener('load', () => { triggerRefresh(); });
-
-        function updateRemainingTime() {
-            const diff = new Date('2026-08-31T23:59:59') - new Date();
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            document.getElementById('remaining-time').textContent = `Rimanenti: ${days} giorni ${hours} ore`;
-        }
-        setInterval(updateRemainingTime, 1000);
-        updateRemainingTime();
 
         const editToggle = document.getElementById('edit-toggle');
         let isEditing = false;
         editToggle.addEventListener('click', () => {
             isEditing = !isEditing;
-            ids.forEach(id => {
+            [...specIds, ...nameIds].forEach(id => {
                 const el = document.getElementById(id);
                 el.contentEditable = isEditing;
                 el.style.background = isEditing ? '#f5f5f5' : 'transparent';
             });
             if (!isEditing) {
-                const data = {};
-                ids.forEach(id => { data[id] = document.getElementById(id).innerText.trim(); });
-                localStorage.setItem('ticket_data_storage', JSON.stringify(data));
+                const sData = {}; specIds.forEach(id => { sData[id] = document.getElementById(id).innerText.trim(); });
+                const nData = {}; nameIds.forEach(id => { nData[id] = document.getElementById(id).innerText.trim(); });
+                
+                localStorage.setItem('ticket_data_extra1', JSON.stringify(sData));
+                localStorage.setItem('user_identity_global', JSON.stringify(nData));
             }
             const isIos = /iPhone|iPad|iPod/.test(navigator.userAgent);
-            if (isIos) {
-                document.querySelector('.edit-text-ios').innerText = isEditing ? 'Fine' : 'Azioni';
-            } else {
-                editToggle.innerHTML = isEditing ? '&#10003;' : '&#8942;';
-            }
+            if (isIos) { document.querySelector('.edit-text-ios').innerText = isEditing ? 'Fine' : 'Azioni'; } 
+            else { editToggle.innerHTML = isEditing ? '&#10003;' : '&#8942;'; }
         });
+
+        // Funzioni Animazione e Tempo (Invariate)
+        function initAnimation() { animation = lottie.loadAnimation({ container: document.getElementById('lottie-container'), renderer: 'svg', loop: true, autoplay: false, path: 'refresh.json' }); }
+        function triggerRefresh() { if (isRefreshing) return; isRefreshing = true; overlay.style.display = 'flex'; animation.goToAndPlay(0, true); setTimeout(() => { overlay.style.opacity = '1'; }, 10); setTimeout(() => { overlay.style.opacity = '0'; setTimeout(() => { overlay.style.display = 'none'; isRefreshing = false; }, 300); }, 800); }
+        function updateRemainingTime() { const diff = new Date('2026-08-31T23:59:59') - new Date(); const days = Math.floor(diff / (1000 * 60 * 60 * 24)); const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); document.getElementById('remaining-time').textContent = `Rimanenti: ${days} giorni ${hours} ore`; }
+        
+        let startY = 0;
+        document.addEventListener('touchstart', (e) => { if (window.scrollY === 0) startY = e.touches[0].pageY; else startY = 0; }, {passive: true});
+        document.addEventListener('touchmove', (e) => { if (startY === 0 || isRefreshing) return; if (e.touches[0].pageY - startY > 80) { triggerRefresh(); startY = 0; } }, {passive: true});
+        document.addEventListener('DOMContentLoaded', () => { initAnimation(); loadSavedData(); });
+        window.addEventListener('load', () => { triggerRefresh(); });
+        setInterval(updateRemainingTime, 1000);
+        updateRemainingTime();
     </script>
 </body>
 </html>

@@ -3,89 +3,80 @@
 <head>
     <link rel="manifest" href="manifest.json">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>I miei biglietti</title>
-    <link rel="stylesheet" href="menu.css">
     <style>
-        /* FIX LARGHEZZA E SCROLL */
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html, body { 
-            margin: 0; 
-            padding: 0; 
-            width: 100%; 
-            overflow-x: hidden; 
-            background-color: #ffffff;
+            margin: 0; padding: 0; width: 100%; 
+            background-color: #f2f2f2; 
+            -webkit-user-select: none;
+            font-family: -apple-system, sans-serif;
         }
 
-        .ticket-list { width: 100%; padding: 0; margin-top: 60px; }
-        .ticket-link { text-decoration: none; display: block; width: 100%; }
+        /* HEADER */
+        .header {
+            background-color: #26ba9d; color: white;
+            padding: 15px 16px; display: flex;
+            justify-content: space-between; align-items: center;
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+        }
+        .header span {
+            font-size: 22px; 
+            font-weight: 500;
+        }
+
+        .ticket-list { 
+            width: 100%; padding: 12px; 
+            margin-top: 55px; padding-bottom: 85px; 
+        }
+
+        .ticket-link { text-decoration: none; display: block; width: 100%; margin-bottom: 10px; }
 
         .ticket-item {
-            position: relative;
-            width: 100%;
-            height: 100px;
-            background-color: #ffffff;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            padding: 0 16px;
-            margin-bottom: 2px;
-            border-bottom: 1px solid #f0f0f0;
+            position: relative; width: 100%; height: 105px;
+            background-color: #ffffff; border: 1px solid #e0e0e0; 
+            border-radius: 4px; overflow: hidden;
         }
 
-        /* ANIMAZIONE TURBO */
         .turbo-fill {
-            position: absolute;
-            top: 0; left: 0; height: 100%; width: 0%;
-            background-color: #a8e2d7;
+            position: absolute; top: 0; left: 0; height: 100%; width: 0%;
+            background-color: #a8e2d7; 
             animation: arstTurboFill 1.8s infinite linear;
             z-index: 1;
         }
 
-        /* ICONE A SINISTRA */
-        .icons-stack {
-            position: relative;
-            z-index: 3;
-            width: 32px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        .ticket-content { position: absolute; top: 10px; left: 12px; z-index: 3; text-align: left; }
+        .company-name { font-size: 14px; color: #8a8a8a; margin: 0; line-height: 1; font-weight: 400; }
+        .ticket-info { font-size: 15px; color: #444; margin: 2px 0 0 0; line-height: 1.2; font-weight: 400; text-transform: uppercase; }
+
+        .bus-container { position: absolute; bottom: 10px; left: 12px; z-index: 3; }
+        .icon-bus-png { width: 22px; height: auto; display: block; }
+
+        .status-text { 
+            position: absolute; bottom: 10px; right: 12px; z-index: 4; 
+            font-size: 14px; 
+            color: #555; 
+            font-weight: 400;
         }
 
-        .icon-checkmark {
-            width: 24px;
-            height: 24px;
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
+        /* FOOTER PIÙ SOTTILE CON ICONA NOME GIGANTE */
+        .footer {
+            position: fixed; bottom: 0; width: 100%; height: 65px; /* Altezza ridotta */
+            background-color: #26ba9d; display: flex; justify-content: space-around; align-items: center;
+            z-index: 2000;
         }
-
-        .icon-bus-png { 
-            width: 20px;
+        .footer img { 
+            width: 42px; 
             height: auto;
-            display: block;
-            margin-top: 55px;
-            margin-left: -10px;
+            opacity: 0.8; 
         }
-
-        /* CONTENUTO TESTUALE */
-        .ticket-content {
-            position: relative;
-            z-index: 3;
-            padding-left: 12px;
-            margin-top: -10px;
-            flex: 1;
-        }
-
-        .company-name { font-weight: 400; font-size: 15px; color: #8a8a8a; margin: 0; }
-        .ticket-info { font-weight: 400; font-size: 15px; color: #222; margin: 0; line-height: 1.2; }
-
-        .remaining-time {
-            position: absolute;
-            bottom: 10px; right: 16px; z-index: 4;
-            font-size: 12px; color: #757575;
+        .footer .active { opacity: 1; width: 44px; }
+        
+        /* ICONA PROFILO MASSIMA: 75px */
+        .footer .icon-profile {
+            width: 75px; 
+            margin-bottom: 5px; /* Leggermente alzata per centrarla bene */
         }
 
         @keyframes arstTurboFill {
@@ -101,105 +92,54 @@
 
     <div class="header">
         <span>I miei biglietti</span>
-        <img src="src/add.webp" alt="Shop" class="shop-icon-header">
-        <span class="plus-icon"></span>
+        <img src="src/add.webp" style="width:24px; opacity: 0.5;">
     </div>
 
     <div class="ticket-list">
+        
         <a href="extraurbano1.html" class="ticket-link">
             <div class="ticket-item">
                 <div class="turbo-fill"></div>
-                <div class="icons-stack">
-                    <svg class="icon-checkmark" viewBox="0 0 24 24">
-                        <path fill="none" stroke="#a8e2d7" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5"></path>
-                    </svg>
-                    <img src="1000131418.webp" class="icon-bus-png">
-                </div>
                 <div class="ticket-content">
-                    <div class="ticket-details">
-                        <p class="company-name">ARST</p>
-                        <p class="ticket-info">Abbonamento annuale studenti extraurbano</p>
-                    </div>
+                    <p class="company-name">ARST</p>
+                    <p class="ticket-info">ABBONAMENTO ANNUALE STUDENTI EXTRAURBANO</p>
                 </div>
-                <div class="remaining-time" data-end-date="2026-08-31T23:59:59"></div>
+                <div class="bus-container"><img src="1000131418.webp" class="icon-bus-png"></div>
+                <div class="status-text">176 giorni 23 ore</div>
             </div>
         </a>
 
         <a href="extraurbano2.html" class="ticket-link">
             <div class="ticket-item">
                 <div class="turbo-fill"></div>
-                <div class="icons-stack">
-                    <svg class="icon-checkmark" viewBox="0 0 24 24">
-                        <path fill="none" stroke="#a8e2d7" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5"></path>
-                    </svg>
-                    <img src="1000131418.webp" class="icon-bus-png">
-                </div>
                 <div class="ticket-content">
-                    <div class="ticket-details">
-                        <p class="company-name">ARST</p>
-                        <p class="ticket-info">Abbonamento annuale studenti extraurbano</p>
-                    </div>
+                    <p class="company-name">ARST</p>
+                    <p class="ticket-info">ABBONAMENTO ANNUALE STUDENTI EXTRAURBANO</p>
                 </div>
-                <div class="remaining-time" data-end-date="2026-08-31T23:59:59"></div>
+                <div class="bus-container"><img src="1000131418.webp" class="icon-bus-png"></div>
+                <div class="status-text">176 giorni 23 ore</div>
             </div>
         </a>
 
         <a href="urbano.html" class="ticket-link">
             <div class="ticket-item">
                 <div class="turbo-fill"></div>
-                <div class="icons-stack">
-                    <svg class="icon-checkmark" viewBox="0 0 24 24">
-                        <path fill="none" stroke="#a8e2d7" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5"></path>
-                    </svg>
-                    <img src="1000131418.webp" class="icon-bus-png">
-                </div>
                 <div class="ticket-content">
-                    <div class="ticket-details">
-                        <p class="company-name">ARST</p>
-                        <p class="ticket-info">Abbonamento annuale studenti urbano</p>
-                    </div>
+                    <p class="company-name">ARST</p>
+                    <p class="ticket-info">ABBONAMENTO ANNUALE URBANO</p>
                 </div>
-                <div class="remaining-time" data-end-date="2026-08-31T23:59:59"></div>
+                <div class="bus-container"><img src="1000131418.webp" class="icon-bus-png"></div>
+                <div class="status-text">176 giorni 23 ore</div>
             </div>
         </a>
+
     </div>
 
     <div class="footer">
-        <a href="#" class="footer-item">
-            <img src="src/shop.webp" alt="Shop" class="icon shop-icon">
-        </a>
-        <a href="#" class="footer-item active">
-            <img src="src/biglietti.webp" alt="Biglietti" class="icon biglietti-icon">
-        </a>
-        <a href="#" class="footer-item">
-            <img src="src/nome.webp" alt="Antonio Frau" class="icon nome-icon">
-        </a>
+        <img src="src/shop.webp">
+        <img src="src/biglietti.webp" class="active">
+        <img src="src/nome.webp" class="icon-profile">
     </div>
 
-    <script>
-        // Registrazione Service Worker per installazione PWA
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js').catch(() => {});
-        }
-
-        function updateRemainingTime() {
-            const timeElements = document.querySelectorAll('.remaining-time');
-            const now = new Date();
-            timeElements.forEach(element => {
-                const endDate = new Date(element.getAttribute('data-end-date'));
-                const diff = endDate - now;
-                if (diff <= 0) {
-                    element.textContent = 'Scaduto!';
-                    return;
-                }
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                element.textContent = `${days} giorni ${hours} ore`;
-            });
-        }
-        updateRemainingTime();
-        setInterval(updateRemainingTime, 1000);
-    </script>
 </body>
-
 </html>
