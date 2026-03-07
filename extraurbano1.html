@@ -22,7 +22,7 @@
             overscroll-behavior-y: contain;
         }
 
-        /* HEADER BASE (ANDROID) */
+        /* HEADER BASE (ANDROID/PIXEL) */
         .ticket-header {
             background-color: #00a896;
             color: white;
@@ -37,13 +37,15 @@
         .ticket-header h2 { font-size: 19px; font-weight: 400; margin: 0 0 0 18px; flex: 1; line-height: 1.1; }
 
         .back-icon-android { display: flex; align-items: center; color: white; text-decoration: none; }
-        .back-text-ios, .edit-text-ios { display: none; }
+        .back-text-ios, .edit-text-ios, .fake-tabbar-ios { display: none; }
 
         /* --- MODIFICHE SPECIFICHE SOLO PER IPHONE --- */
         @supports (-webkit-touch-callout: none) {
             body {
                 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
                 letter-spacing: -0.01em;
+                /* Spazio extra per non coprire i dati con la finta tabbar */
+                padding-bottom: calc(75px + env(safe-area-inset-bottom)) !important;
             }
             .ticket-header {
                 height: calc(50px + env(safe-area-inset-top)) !important;
@@ -56,10 +58,10 @@
                 margin: 0 !important;
             }
             
+            /* Sostituzione icone iOS */
             .back-icon-android svg { display: none; }
             .back-text-ios { 
-                display: flex; align-items: center; font-size: 17px; 
-                color: white; font-weight: 400;
+                display: flex; align-items: center; font-size: 17px; color: white; font-weight: 400;
             }
             .back-text-ios::before {
                 content: ''; display: inline-block; width: 11px; height: 11px;
@@ -70,22 +72,34 @@
             #edit-toggle { font-size: 0 !important; }
             .edit-text-ios { display: inline; font-size: 17px; font-weight: 400; color: white; }
 
-            /* QR PIÙ GRANDE SU IPHONE */
-            .qr-image { 
-                width: 175px !important; 
-            }
-            .qr-section {
-                padding: 10px 0 !important; /* Ancora più compatto */
-            }
-            .qr-section p {
-                font-size: 17px !important; /* Date sotto QR rimpicciolite */
-                margin-top: 10px !important;
-            }
-
-            /* DETTAGLI PIÙ PICCOLI SU IPHONE */
+            /* QR e Testi iOS */
+            .qr-image { width: 175px !important; }
+            .qr-section { padding: 10px 0 !important; }
+            .qr-section p { font-size: 17px !important; margin-top: 10px !important; }
             .label { font-size: 14px !important; font-weight: 500 !important; }
             .value { font-size: 15px !important; }
             .detail-row { padding: 7px 0 !important; }
+
+            /* FINTA TABBAR IOS OTTIMIZZATA */
+            .fake-tabbar-ios {
+                display: flex !important;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: calc(100px + env(safe-area-inset-bottom));
+                background-color: #f9f9f9;
+                border-top: 0.5px solid #d1d1d1;
+                z-index: 2000;
+                padding-bottom: env(safe-area-inset-bottom);
+                align-items: center;
+                justify-content: center;
+            }
+            .fake-tabbar-ios img {
+                height: 100%;
+                width: 100%;
+                object-fit: contain;
+            }
         }
 
         /* ELEMENTI COMUNI */
@@ -176,6 +190,10 @@
             <div class="detail-row"><span class="label">Convalida</span><span class="value">03 set, 12:37</span></div>
         </section>
     </main>
+
+    <div class="fake-tabbar-ios">
+        <img src="toolbar.webp" alt="Menu" onerror="this.style.display='none'">
+    </div>
 
     <script>
         const ids = ['t-code', 't-date', 't-name', 't-surname', 't-card', 't-city'];
