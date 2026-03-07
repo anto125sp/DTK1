@@ -19,6 +19,9 @@
             user-select: none;
             -webkit-user-select: none;
             overflow-x: hidden;
+            /* Ottimizzazione per iOS elastic scroll */
+            overscroll-behavior-y: contain;
+            -webkit-overflow-scrolling: touch;
         }
 
         /* OVERLAY SEMITRASPARENTE */
@@ -198,7 +201,21 @@
             localStorage.setItem('ticket_data_storage', JSON.stringify(data));
         }
 
-        // Inizializzazione
+        // 3. PULL TO REFRESH PER IPHONE PWA (Senza interferire con Android)
+        let touchStart = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStart = e.touches[0].pageY;
+        }, {passive: true});
+
+        document.addEventListener('touchmove', (e) => {
+            const touchMove = e.touches[0].pageY;
+            // Se trascini giù per più di 160px mentre sei già in cima
+            if (window.scrollY === 0 && touchMove - touchStart > 160) {
+                location.reload(); 
+            }
+        }, {passive: true});
+
+        // Inizializzazione Service Worker
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js').catch(() => {});
         }
@@ -243,7 +260,7 @@
             });
 
             if (!isEditing) {
-                saveCurrentData(); // SALVA QUANDO PREMI LA SPUNTA
+                saveCurrentData(); 
             }
 
             editToggle.innerHTML = isEditing ? '&#10003;' : '&#8942;';
