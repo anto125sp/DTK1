@@ -22,7 +22,7 @@
             overscroll-behavior-y: contain;
         }
 
-        /* HEADER BASE */
+        /* HEADER BASE (ANDROID) */
         .ticket-header {
             background-color: #26bb9d;
             color: white;
@@ -60,10 +60,15 @@
             #edit-toggle { font-size: 0 !important; }
             .edit-text-ios { display: inline; font-size: 17px; color: white; }
 
-            .qr-image { width: 195px !important; } 
-            .label { font-size: 13.5px !important; }
-            .value { font-size: 14.5px !important; }
-            .detail-row { padding: 7.5px 0 !important; }
+            /* RECUPERO SPAZIO SU IPHONE PER NON COPRIRE I DATI */
+            .qr-image { width: 175px !important; } 
+            .qr-section { padding: 10px 0 !important; }
+            .qr-section p { margin-top: 5px !important; font-size: 18px !important; }
+            
+            .details-list { margin-top: -10px !important; }
+            .label { font-size: 13px !important; }
+            .value { font-size: 14px !important; }
+            .detail-row { padding: 6.5px 0 !important; }
 
             .fake-tabbar-ios {
                 display: flex !important; position: fixed; bottom: 0; left: 0; width: 100%;
@@ -96,10 +101,10 @@
         .ticket-type { font-weight: 400; font-size: 16px; color: #222; margin: 0; }
         .remaining-time-overlay { position: absolute; bottom: 10px; right: 16px; z-index: 4; font-size: 14px; color: #757575; }
 
-        /* LISTA DATI: Più in basso su Android */
+        /* LISTA DATI (CONFIGURAZIONE ANDROID) */
         .details-list { 
             padding: 0 16px; 
-            margin-top: 20px; /* Spostato leggermente più in basso */
+            margin-top: 25px; 
         }
         .detail-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1.2px solid #b0b0b0; }
         .label { color: #9e9e9e; font-size: 17px; }
