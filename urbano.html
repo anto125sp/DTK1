@@ -13,13 +13,19 @@
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        body {
-            margin: 0; font-family: Roboto, Arial, sans-serif;
-            background-color: #ffffff; color: #333;
-            overflow-x: hidden; overscroll-behavior-y: contain;
+        html, body {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #ffffff;
         }
 
-        /* HEADER SUPER SOTTILE */
+        body {
+            font-family: Roboto, Arial, sans-serif;
+            color: #333;
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* --- HEADER ANDROID --- */
         .ticket-header {
             background-color: #26bb9d; color: white;
             padding: 0 16px; display: flex; align-items: center;
@@ -33,14 +39,14 @@
         /* --- CONFIGURAZIONE SPECIFICA IPHONE --- */
         @supports (-webkit-touch-callout: none) {
             body {
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
-                padding-bottom: calc(85px + env(safe-area-inset-bottom)) !important;
+                font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif !important;
             }
             .ticket-header {
-                height: calc(44px + env(safe-area-inset-top)) !important;
+                height: calc(52px + env(safe-area-inset-top)) !important;
                 padding: env(safe-area-inset-top) 12px 0 12px !important;
+                display: flex !important; align-items: center !important;
             }
-            .ticket-header h2 { font-size: 16px !important; font-weight: 600 !important; text-align: center; margin: 0 !important; }
+            .ticket-header h2 { font-size: 15px !important; font-weight: 600 !important; text-align: center; margin: 0 !important; }
             .back-icon-android svg { display: none; }
             .back-text-ios { display: flex; align-items: center; font-size: 17px; color: white; }
             .back-text-ios::before {
@@ -51,27 +57,48 @@
             #edit-toggle { font-size: 0 !important; }
             .edit-text-ios { display: inline; font-size: 17px; color: white; }
 
-            .qr-image { width: 175px !important; } 
-            .qr-section { padding: 10px 0 !important; }
-            .details-list { margin-top: -10px !important; padding: 0 !important; }
-            .detail-row { padding: 7px 16px !important; }
+            /* TESTI ANIMAZIONE IPHONE */
+            .video-container { height: 105px !important; } 
+            .overlay-text { 
+                padding-left: 8px !important; 
+                margin-top: -42px !important; /* Alzati per iPhone */
+            }
+            .agency-name { margin-top: 4px !important; font-size: 14px !important; }
+            .ticket-type { font-size: 15px !important; }
 
-            /* Icone su iPhone */
-            .icon-checkmark { width: 30px !important; height: 30px !important; left: -4px !important; }
-            .icon-bus-svg { width: 22px !important; margin-left: 20px !important; }
-            .overlay-text { padding-left: 10px !important; }
+            /* QR E DATA IPHONE */
+            .qr-image { width: 195px !important; } 
+            .qr-section { padding: 10px 0 5px 0 !important; }
+            .qr-section p { 
+                font-size: 16px !important; 
+                margin-top: 8px !important; 
+                font-weight: 600 !important;
+                color: #757575 !important;
+            }
 
+            .details-list { margin-top: -15px !important; padding: 0 !important; }
+            .detail-row { padding: 8px 16px !important; }
+            .label { font-size: 12px !important; }
+            .value { font-size: 13px !important; font-weight: 500 !important; }
+
+            .icon-checkmark { width: 28px !important; height: 28px !important; left: -2px !important; top: 32px !important; }
+            .icon-bus-svg { width: 20px !important; margin-left: 15px !important; margin-top: 55px !important; }
+
+            /* TOOLBAR IPHONE BASSA E LUNGA */
             .fake-tabbar-ios {
                 display: flex !important; position: fixed; bottom: 0; left: 0; width: 100%;
-                height: calc(75px + env(safe-area-inset-bottom));
+                height: calc(52px + env(safe-area-inset-bottom)) !important;
                 background-color: #26bb9d !important; z-index: 2000;
                 padding-bottom: env(safe-area-inset-bottom);
-                align-items: center; justify-content: center; overflow: hidden;
+                overflow: hidden;
             }
-            .fake-tabbar-ios img { height: 100%; width: 100%; object-fit: cover; display: block; }
+            .fake-tabbar-ios img { 
+                width: 100% !important; height: 100% !important; 
+                object-fit: cover !important; object-position: top; display: block; 
+            }
         }
 
-        /* ELEMENTI COMUNI */
+        /* --- ELEMENTI COMUNI E ANDROID --- */
         #refresh-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.9); z-index: 1000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s ease; }
         #lottie-container { width: 80px; height: 80px; }
         #edit-toggle { font-size: 26px; color: white; cursor: pointer; padding: 5px; min-width: 65px; text-align: right; }
@@ -79,45 +106,21 @@
         .video-container { position: relative; width: 100%; height: 100px; background-color: #ffffff; overflow: hidden; display: flex; align-items: center; padding: 0 8px; }
         .video-emulator { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background-color: #a8e2d7; animation: arstTurboFill 1.8s infinite linear; z-index: 1; }
         
-        /* POSIZIONAMENTO ICONE ANDROID */
         .icons-stack { position: relative; z-index: 3; display: flex; flex-direction: column; align-items: center; width: 45px; }
-        
-        /* Spunta Android: margine sinistro */
-        .icon-checkmark { 
-            width: 26px; height: 26px;
-            position: absolute; 
-            left: 2px; /* Avvicinata al bordo sinistro del container */
-            top: 42px; 
-            transform: translateY(-50%); 
-        }
-        
-        /* Bus Android: Sotto la "A" di Abbonamento */
-        .icon-bus-svg { 
-            width: 20px;
-            height: auto; 
-            margin-top: 60px; 
-            margin-left: 67px; /* Spostato più a destra per stare sotto la A */
-            position: relative; 
-            z-index: 3; 
-        }
+        .icon-checkmark { width: 26px; height: 26px; position: absolute; left: 2px; top: 42px; transform: translateY(-50%); }
+        .icon-bus-svg { width: 20px; height: auto; margin-top: 60px; margin-left: 67px; position: relative; z-index: 3; }
 
-        /* Testi avvicinati alla spunta */
-        .overlay-text { 
-            position: relative; 
-            z-index: 3; 
-            padding-left: -40px; /* Ridotto il padding per avvicinare le scritte alle icone */
-            margin-top: -45px; 
-        }
+        .overlay-text { position: relative; z-index: 3; padding-left: -40px; margin-top: -35px; }
         .agency-name { font-size: 17px; color: #8a8a8a; margin: 0; }
         .ticket-type { font-size: 18px; color: #222; margin: 0; }
         .remaining-time-overlay { position: absolute; bottom: 10px; right: 16px; z-index: 4; font-size: 16px; color: #757575; }
 
-        /* RIGHE LUNGHE */
+        /* DATA SOTTO QR (ANDROID ORIGINALE) */
+        .qr-section { text-align: center; padding: 25px 0; }
+        .qr-section p { font-weight: 600; font-size: 21px; color: #757575; margin-top: 35px; }
+
         .details-list { padding: 0; margin-top: -40px; }
-        .detail-row { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 10px 12px; border-bottom: 1.1px solid #d0d0d0; 
-        }
+        .detail-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-bottom: 1.1px solid #d0d0d0; }
         .label { color: #9e9e9e; font-size: 17px; }
         .value { color: #222; font-size: 18px; text-align: right; flex: 1; margin-left: 20px; }
 
@@ -143,23 +146,23 @@
         <div id="edit-toggle">&#8942;<span class="edit-text-ios">Azioni</span></div>
     </header>
 
-    <div class="video-container">
-        <div class="video-emulator"></div>
-        <div class="icons-stack">
-            <svg class="icon-checkmark" viewBox="0 0 24 24"><path fill="none" stroke="#a8e2d7" stroke-width="2" d="M20 6L9 17l-5-5"></path></svg>
-            <img src="1000131418.webp" class="icon-bus-svg" alt="Bus">
+    <main style="height: auto; max-height: 100%; overflow: hidden;">
+        <div class="video-container">
+            <div class="video-emulator"></div>
+            <div class="icons-stack">
+                <svg class="icon-checkmark" viewBox="0 0 24 24"><path fill="none" stroke="#a8e2d7" stroke-width="2" d="M20 6L9 17l-5-5"></path></svg>
+                <img src="1000131418.webp" class="icon-bus-svg" alt="Bus">
+            </div>
+            <div class="overlay-text">
+                <p class="agency-name">ARST</p>
+                <p class="ticket-type">Abbonamento annuale studenti urbano</p>
+            </div>
+            <div class="remaining-time-overlay"><span id="remaining-time"></span></div>
         </div>
-        <div class="overlay-text">
-            <p class="agency-name">ARST</p>
-            <p class="ticket-type">Abbonamento annuale studenti urbano</p>
-        </div>
-        <div class="remaining-time-overlay"><span id="remaining-time"></span></div>
-    </div>
 
-    <main class="ticket-body">
-        <section class="qr-section" style="text-align: center; padding: 25px 0;">
+        <section class="qr-section">
             <img src="src/qr.webp" class="qr-image" style="width: 130px;" alt="QR">
-            <p style="font-weight: 600; font-size: 21px; color: #757575; margin-top: 35px;">01/09/25 - 31/08/26</p>
+            <p>01/09/25 - 31/08/26</p>
         </section>
 
         <section class="details-list">
@@ -221,8 +224,21 @@
         function updateRemainingTime() { const diff = new Date('2026-08-31T23:59:59') - new Date(); const days = Math.floor(diff / (1000 * 60 * 60 * 24)); const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); document.getElementById('remaining-time').textContent = `Rimanenti: ${days} giorni ${hours} ore`; }
         
         let startY = 0;
-        document.addEventListener('touchstart', (e) => { if (window.scrollY === 0) startY = e.touches[0].pageY; else startY = 0; }, {passive: true});
-        document.addEventListener('touchmove', (e) => { if (startY && !isRefreshing && e.touches[0].pageY - startY > 80) { triggerRefresh(); startY = 0; } }, {passive: true});
+        document.addEventListener('touchstart', (e) => { startY = e.touches[0].pageY; }, {passive: true});
+        document.addEventListener('touchmove', (e) => {
+            const currentY = e.touches[0].pageY;
+            if (currentY - startY > 80 && !isRefreshing && window.scrollY <= 0) {
+                triggerRefresh();
+                startY = currentY;
+            }
+        }, {passive: true});
+
+        document.addEventListener('touchend', () => {
+            if (window.scrollY !== 0) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }, {passive: true});
+
         document.addEventListener('DOMContentLoaded', () => { initAnimation(); loadSavedData(); });
         window.addEventListener('load', triggerRefresh);
         setInterval(updateRemainingTime, 1000);
