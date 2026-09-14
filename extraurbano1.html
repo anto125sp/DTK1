@@ -216,7 +216,7 @@
 
         function initAnimation() { animation = lottie.loadAnimation({ container: document.getElementById('lottie-container'), renderer: 'svg', loop: true, autoplay: false, path: 'refresh.json' }); }
         function triggerRefresh() { if (isRefreshing) return; isRefreshing = true; overlay.style.display = 'flex'; animation.goToAndPlay(0, true); setTimeout(() => { overlay.style.opacity = '1'; }, 10); setTimeout(() => { overlay.style.opacity = '0'; setTimeout(() => { overlay.style.display = 'none'; isRefreshing = false; }, 300); }, 800); }
-        function updateRemainingTime() { const diff = new Date('2026-08-31T23:59:59') - new Date(); const days = Math.floor(diff / (1000 * 60 * 60 * 24)); const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); document.getElementById('remaining-time').textContent = `Rimanenti: ${days} giorni ${hours} ore`; }
+        function updateRemainingTime() { const diff = new Date('2027-08-31T23:59:59') - new Date(); const days = Math.floor(diff / (1000 * 60 * 60 * 24)); const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); document.getElementById('remaining-time').textContent = `Rimanenti: ${days} giorni ${hours} ore`; }
         
         let startY = 0;
         document.addEventListener('touchstart', (e) => { startY = e.touches[0].pageY; }, {passive: true});
